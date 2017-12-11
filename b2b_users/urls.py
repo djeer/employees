@@ -17,6 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^b2b/users/admin/', admin.site.urls),
-    url(r'^b2b/users/api_v1/', include('users.urls')),
+    url(r'^b2b/admin/users/', admin.site.urls),
+    url(r'^b2b/users/', include('users.urls_user')),
+    url(r'^b2b/devices/', include('users.urls_device')),  # Android client API
 ]
