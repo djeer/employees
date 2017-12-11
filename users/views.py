@@ -8,8 +8,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.db import IntegrityError
 
-from .models import User, Group
-from .serializers import UserSerializer, GroupSerializer
+from .models import User, Group, Track
+from .serializers import UserSerializer, GroupSerializer, TrackSerializer
 
 
 def get_object(model, pk):
@@ -54,6 +54,24 @@ class GroupsList(APIView):
 
     def post(self, request, **kwargs):
         serializer = GroupSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                serializer.save()
+            except IntegrityError as e:
+                return Response({'detail': str(e)}, status=status.HTTP_409_CONFLICT)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TrackDetail(APIView):
+
+    def get(self, request, pk, **kwargs):
+        points = Track.objects.get(pk=pk)
+        serializer = TrackSerializer(points, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, **kwargs):
+        serializer = TrackSerializer(data=request.data)
         if serializer.is_valid():
             try:
                 serializer.save()
