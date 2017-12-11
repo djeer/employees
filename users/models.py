@@ -39,3 +39,14 @@ class Track(models.Model):
     date = models.DateField()
     latitude = models.FloatField()
     longitude = models.FloatField()
+
+
+class Device(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user_id = models.ForeignKey(User, related_name='device', on_delete=models.CASCADE)
+    client_key = models.TextField(null=False)
+    login_date = models.DateField(null=False)
+    token = models.TextField()
+    model = models.TextField()
+    is_ios = models.BooleanField()
+    os_version = models.TextField()
