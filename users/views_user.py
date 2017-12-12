@@ -11,7 +11,7 @@ from django.db import IntegrityError
 import datetime
 
 from .models import User, Group, Track
-from .serializers import UserSerializer, GroupSerializer, TrackSerializer
+from .serializers import UserSerializer, UserListSerializer, GroupSerializer, TrackSerializer
 
 
 def get_object(model, pk):
@@ -43,7 +43,7 @@ class UsersList(APIView):
 
     def get(self, request, **kwargs):
         users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
+        serializer = UserListSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, **kwargs):

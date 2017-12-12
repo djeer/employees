@@ -19,7 +19,20 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'ldap_login', 'email', 'phone', 'password',
                   'first_name', 'middle_name', 'last_name',
-                  'office', 'dept', 'group_id',)
+                  'office', 'dept', 'job_title', 'group_id', 'is_ldap')
+        read_only_fields = ('id',)
+        extra_kwargs = {'password': {'write_only': True}}
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+    device = serializers.SlugRelatedField(read_only=True, slug_field='model')
+
+    class Meta:
+        model = User
+        fields = ('id', 'ldap_login', 'email', 'phone', 'password',
+                  'first_name', 'middle_name', 'last_name',
+                  'office', 'dept', 'job_title', 'group_id', 'device', 'is_ldap')
         read_only_fields = ('id',)
         extra_kwargs = {'password': {'write_only': True}}
 
