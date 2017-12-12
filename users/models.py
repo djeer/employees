@@ -27,12 +27,12 @@ class User(models.Model):
     phone = models.TextField(max_length=20, unique=True)
 
     first_name = models.TextField(max_length=256)
-    middle_name = models.TextField(max_length=256)
+    middle_name = models.TextField(max_length=256, null=True)
     last_name = models.TextField(max_length=256)
-    office = models.TextField(max_length=256)
-    dept = models.TextField(max_length=256)
-    job_title = models.TextField(max_length=256)
-    image_uuid = models.TextField(max_length=36)
+    office = models.TextField(max_length=256, null=True)
+    dept = models.TextField(max_length=256, null=True)
+    job_title = models.TextField(max_length=256, null=True)
+    image_uuid = models.TextField(max_length=36, null=True)
 
     group_id = models.ForeignKey(Group, related_name='users', default=None, on_delete=models.SET_DEFAULT, null=True)
     role = models.ForeignKey(Role, related_name='users', default=None, on_delete=models.SET_DEFAULT, null=True)

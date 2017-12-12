@@ -12,14 +12,28 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ('id', 'name',)
 
 
+class GroupListSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+    count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Group
+        fields = ('id', 'name', 'count')
+
+    def get_count(self, obj):
+        return obj.users.count()
+
+
 class UserSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
 
     class Meta:
         model = User
-        fields = ('id', 'ldap_login', 'email', 'phone', 'password',
+        fields = ('id',  'email', 'phone', 'password',
                   'first_name', 'middle_name', 'last_name',
-                  'office', 'dept', 'job_title', 'group_id', 'is_ldap')
+                  'office', 'dept', 'job_title',
+                  'group_id', 'role', 'is_ldap',
+                  'ldap_login',)
         read_only_fields = ('id',)
         extra_kwargs = {'password': {'write_only': True}}
 
@@ -30,9 +44,11 @@ class UserListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'ldap_login', 'email', 'phone', 'password',
+        fields = ('id', 'email', 'phone', 'password',
                   'first_name', 'middle_name', 'last_name',
-                  'office', 'dept', 'job_title', 'group_id', 'device', 'is_ldap')
+                  'office', 'dept', 'job_title',
+                  'group_id', 'role', 'is_ldap',
+                  'device',)
         read_only_fields = ('id',)
         extra_kwargs = {'password': {'write_only': True}}
 
