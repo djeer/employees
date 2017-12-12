@@ -12,7 +12,9 @@ from django.db.models import Max
 import datetime
 
 from .models import User, Group, Track
-from .serializers import UserSerializer, UserListSerializer, GroupListSerializer, GroupSerializer, TrackSerializer, TrackListSerializer
+from .serializers_user import UserSerializer, UserListSerializer
+from .serializers_user import GroupSerializer, GroupListSerializer
+from .serializers_user import TrackListSerializer
 
 
 def get_object(model, pk):

@@ -53,17 +53,7 @@ class UserListSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
 
-class TrackSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
-
-    class Meta:
-        model = Track
-        fields = ('id', 'user', 'date', 'latitude', 'longitude',)
-        read_only_fields = ('id',)
-
-
 class TrackListSerializer(serializers.ModelSerializer):
-    #date = serializers.DateTimeField(required=True)
 
     class Meta:
         model = Track

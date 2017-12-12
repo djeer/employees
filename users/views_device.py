@@ -12,7 +12,7 @@ from django.db.models import ObjectDoesNotExist
 import datetime
 
 from .models import User, Device
-from .serializers import TrackSerializer, DeviceSerializer
+from .serializers_device import TrackSerializer, DeviceSerializer
 from .lib import gen_client_key
 
 
