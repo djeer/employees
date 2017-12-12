@@ -28,7 +28,7 @@ class TrackSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Track
-        fields = ('user_id', 'date', 'latitude', 'longitude',)
+        fields = ('id', 'user_id', 'date', 'latitude', 'longitude',)
         read_only_fields = ('id',)
 
 
@@ -37,6 +37,6 @@ class DeviceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Device
-        fields = ('user_id', 'client_key', 'token', 'model', 'is_ios', 'os_version')
+        fields = ('id', 'user_id', 'client_key', 'token', 'model', 'is_ios', 'os_version',)
         read_only_fields = ('id',)
 

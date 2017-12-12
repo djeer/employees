@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.utils.timezone import now
 
 
 class Group(models.Model):
@@ -12,7 +13,7 @@ class Group(models.Model):
 
 class User(models.Model):
     id = models.BigAutoField(primary_key=True)
-    ldap_login = models.TextField(max_length=256, unique=True)
+    ldap_login = models.TextField(max_length=256, unique=True, null=True)
     password = models.TextField(max_length=64, null=True)
     email = models.EmailField(max_length=256, unique=True)
     phone = models.TextField(max_length=20, unique=True)
@@ -36,7 +37,7 @@ class User(models.Model):
 class Track(models.Model):
     id = models.BigAutoField(primary_key=True)
     user_id = models.ForeignKey(User, related_name='track', on_delete=models.CASCADE)
-    date = models.DateField()
+    date = models.DateTimeField()
     latitude = models.FloatField()
     longitude = models.FloatField()
 
@@ -45,7 +46,7 @@ class Device(models.Model):
     id = models.BigAutoField(primary_key=True)
     user_id = models.ForeignKey(User, related_name='device', on_delete=models.CASCADE)
     client_key = models.TextField(null=False)
-    login_date = models.DateField(null=False)
+    login_date = models.DateTimeField(null=False, default=now)
     token = models.TextField()
     model = models.TextField()
     is_ios = models.BooleanField()

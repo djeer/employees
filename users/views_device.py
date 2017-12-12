@@ -49,11 +49,11 @@ class DeviceUpdate(APIView):
     parser_classes = (JSONParser,)
 
     def post(self, request, **kwargs):
-        device = Device.objects.get(id=request.data['cid'], client_key=request.data['ckey'])
+        device = Device.objects.get(id=int(request.data['cid']), client_key=request.data['ckey'])
         if not device:
             return Response({'scs': False, 'emsg': 1}, status.HTTP_401_UNAUTHORIZED)
         geo = {
-            'user_id': device.user_id,
+            'user_id': device.user_id.id,
             'latitude': request.data['geo']['lat'],
             'longitude': request.data['geo']['long'],
             'date': datetime.datetime.now()
@@ -79,3 +79,9 @@ class DeviceLogout(APIView):
             return Response({'scs': True})
         else:
             return Response({'scs': False, 'emsg': 4}, status.HTTP_401_UNAUTHORIZED)
+
+
+class DummyView(APIView):
+
+    def post(self, request, **kwargs):
+        return Response({'scs': True})
