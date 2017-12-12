@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from django.db import IntegrityError
+from django.db.models import ObjectDoesNotExist
 import datetime
 
 from .models import User, Device
@@ -34,6 +35,9 @@ class DeviceLogin(APIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
         try:
+            # Удаляем старое устройство
+            Device.objects.filter(user=user).delete()
+            # Сохраняем новое
             serializer.save()
         except IntegrityError as e:
             return Response({'detail': str(e)}, status.HTTP_409_CONFLICT)
@@ -49,9 +53,10 @@ class DeviceUpdate(APIView):
     parser_classes = (JSONParser,)
 
     def post(self, request, **kwargs):
-        device = Device.objects.get(id=int(request.data['cid']), client_key=request.data['ckey'])
-        if not device:
-            return Response({'scs': False, 'emsg': 1}, status.HTTP_401_UNAUTHORIZED)
+        try:
+            device = Device.objects.get(pk=int(request.data['cid']), client_key=request.data['ckey'])
+        except ObjectDoesNotExist:
+            return Response({'scs': False, 'emsg': 16}, status=466)
         geo = {
             'user': device.user.id,
             'latitude': request.data['geo']['lat'],
@@ -72,9 +77,11 @@ class DeviceLogout(APIView):
     parser_classes = (JSONParser,)
 
     def post(self, request, **kwargs):
-        device = Device.objects.get(pk=int(request.data['cid']))
-        if device.client_key == request.data['ckey'] and \
-                device.user.password == request.data['pwd']:
+        try:
+            device = Device.objects.get(pk=int(request.data['cid']), client_key=request.data['ckey'])
+        except ObjectDoesNotExist:
+            return Response({'scs': False, 'emsg': 16}, status=466)
+        if device.client_key == request.data['ckey'] and device.user.password == request.data['pwd']:
             device.delete()
             return Response({'scs': True})
         else:
