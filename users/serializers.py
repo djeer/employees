@@ -62,6 +62,14 @@ class TrackSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
 
+class TrackListSerializer(serializers.ModelSerializer):
+    #date = serializers.DateTimeField(required=True)
+
+    class Meta:
+        model = Track
+        fields = ('date', 'latitude', 'longitude',)
+
+
 class DeviceSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
 
@@ -69,4 +77,3 @@ class DeviceSerializer(serializers.ModelSerializer):
         model = Device
         fields = ('id', 'user', 'client_key', 'token', 'model', 'is_ios', 'os_version',)
         read_only_fields = ('id',)
-

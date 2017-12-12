@@ -7,5 +7,6 @@ urlpatterns = [
     url(r'^$', views_user.UsersList.as_view(), name='users-list'),
     url(r'^(?P<pk>\d+)/$', views_user.UsersDetail.as_view(), name='users-detail'),
     url(r'^groups/$', views_user.GroupsList.as_view(), name='groups-list'),
-    url(r'^(?P<pk>\d+)/track/$', views_user.TrackDetail.as_view(), name='track-detail'),
+    url(r'^(?P<pk>\d+)/track/$', views_user.TrackList.as_view(), name='track-list'),
+    url(r'^(?P<pk>\d+)/geo/$', views_user.TrackRecentUpdate.as_view(), name='track-last-update'),
 ]
