@@ -45,11 +45,36 @@ class GroupsList(APIView):
 class UsersList(APIView):
 
     def get(self, request, **kwargs):
-        users = User.objects.all()
-        serializer = UserListSerializer(users, many=True)
+        count = User.objects.count()
+        # получаем query params
+        try:
+            start = int(request.query_params['start'])
+            limit = int(request.query_params['limit'])
+            order_field = request.query_params['sortf']
+            group_id = request.query_params.get('group_id')
+        except Exception as e:
+            return Response({'detail': 'Wrong query params: %s' % str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        # поле для сортировки
+        if not order_field:
+            order_field = 'last_name'
+        # переворот сортировки
+        if request.query_params.get('sortt') == '1':
+            order_field = '-'+order_field
+
+        # формируем запрос на всех пользователей
+        query_set = User.objects.all()
+
+        # фильтруем по группам
+        if group_id:
+            query_set = query_set.filter(group_id=group_id)
+
+        # сортируем и обрезаем
+        query_set = query_set.order_by(order_field)[start:limit]
+
+        serializer = UserListSerializer(query_set, many=True)
         response = {
             'users': serializer.data,
-            'users_count': len(serializer.data)
+            'users_count': count
         }
         return Response(response, status=status.HTTP_200_OK)
 
