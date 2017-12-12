@@ -17,10 +17,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'ldap_login', 'email', 'phone',
+        fields = ('id', 'ldap_login', 'email', 'phone', 'password',
                   'first_name', 'middle_name', 'last_name',
                   'office', 'dept', 'group_id',)
         read_only_fields = ('id',)
+        extra_kwargs = {'password': {'write_only': True}}
 
 
 class TrackSerializer(serializers.ModelSerializer):
@@ -28,7 +29,7 @@ class TrackSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Track
-        fields = ('id', 'user_id', 'date', 'latitude', 'longitude',)
+        fields = ('id', 'user', 'date', 'latitude', 'longitude',)
         read_only_fields = ('id',)
 
 
@@ -37,6 +38,6 @@ class DeviceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Device
-        fields = ('id', 'user_id', 'client_key', 'token', 'model', 'is_ios', 'os_version',)
+        fields = ('id', 'user', 'client_key', 'token', 'model', 'is_ios', 'os_version',)
         read_only_fields = ('id',)
 

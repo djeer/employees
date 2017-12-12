@@ -36,7 +36,7 @@ class User(models.Model):
 
 class Track(models.Model):
     id = models.BigAutoField(primary_key=True)
-    user_id = models.ForeignKey(User, related_name='track', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='track', on_delete=models.CASCADE)
     date = models.DateTimeField()
     latitude = models.FloatField()
     longitude = models.FloatField()
@@ -44,7 +44,7 @@ class Track(models.Model):
 
 class Device(models.Model):
     id = models.BigAutoField(primary_key=True)
-    user_id = models.ForeignKey(User, related_name='device', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='device', on_delete=models.CASCADE)
     client_key = models.TextField(null=False)
     login_date = models.DateTimeField(null=False, default=now)
     token = models.TextField()

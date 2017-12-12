@@ -7,5 +7,6 @@ urlpatterns = [
     url(r'^update/$', views_device.DeviceUpdate.as_view(), name='device-update'),
     url(r'^apps/$', views_device.DummyView.as_view(), name='device-update'),
     url(r'^token/$', views_device.DummyView.as_view(), name='device-update'),
+    url(r'^batch/$', views_device.DummyView.as_view(), name='device-update'),
     url(r'^logout/$', views_device.DeviceLogout.as_view(), name='device-logout'),
 ]

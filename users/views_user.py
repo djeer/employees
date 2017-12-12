@@ -47,6 +47,7 @@ class UsersList(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, **kwargs):
+        request.data['password'] = 'qqqqqq'
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             try:

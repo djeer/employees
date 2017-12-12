@@ -23,7 +23,7 @@ class DeviceLogin(APIView):
         if user.password != request.data['pwd']:
             return Response({'scs': False, 'emsg': 4}, status.HTTP_401_UNAUTHORIZED)
         device = {
-            'user_id': user.id,
+            'user': user.id,
             'client_key': gen_client_key(),
             'token': request.data['token'],
             'model': request.data['man']+' '+request.data['mod'],
@@ -53,7 +53,7 @@ class DeviceUpdate(APIView):
         if not device:
             return Response({'scs': False, 'emsg': 1}, status.HTTP_401_UNAUTHORIZED)
         geo = {
-            'user_id': device.user_id.id,
+            'user': device.user.id,
             'latitude': request.data['geo']['lat'],
             'longitude': request.data['geo']['long'],
             'date': datetime.datetime.now()
@@ -72,9 +72,9 @@ class DeviceLogout(APIView):
     parser_classes = (JSONParser,)
 
     def post(self, request, **kwargs):
-        user = User.objects.get(email=request.data['em'])
-        if user.password == request.data['pwd']:
-            device = Device.objects.get(user_id=user.id)
+        device = Device.objects.get(pk=int(request.data['cid']))
+        if device.client_key == request.data['ckey'] and \
+                device.user.password == request.data['pwd']:
             device.delete()
             return Response({'scs': True})
         else:
