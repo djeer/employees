@@ -34,7 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
                   'office', 'dept', 'job_title',
                   'group_id', 'role', 'is_ldap',
                   'ldap_login',)
-        read_only_fields = ('id',)
+        read_only_fields = ('id', 'device')
         extra_kwargs = {'password': {'write_only': True}}
 
 

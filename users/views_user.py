@@ -92,6 +92,16 @@ class UsersList(APIView):
 
 class UsersDetail(APIView):
 
+    def patch(self, request, pk, **kwargs):
+        user = get_object(User, pk)
+        if 'group_id' in request.data:
+            request.data['group_id'] = get_object(Group, request.data['group_id'])
+
+        serializer = UserSerializer()
+        if serializer.update(user, request.data):
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def delete(self, request, pk, **kwargs):
         user = get_object(User, pk)
         user.delete()
