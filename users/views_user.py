@@ -48,7 +48,8 @@ class UsersList(APIView):
 
     def __init__(self):
         super(UsersList, self).__init__()
-        self.filter_fields  = ('first_name', 'middle_name', 'last_name', 'dept', 'job_title', 'email', 'phone', )
+        self.filter_str_fields = ('first_name', 'middle_name', 'last_name', 'dept', 'job_title', 'email', 'phone', )
+        self.filter_int_fields = ('group_id', 'role_id', 'group', 'role')
 
     def get(self, request, **kwargs):
         count = User.objects.count()
@@ -59,11 +60,12 @@ class UsersList(APIView):
             order_field = request.query_params['sortf']
             # поля для фильтров
             qs_filter = {}
-            # группа цифрой - отдельно от строк
-            if 'group_id' in request.query_params:
-                qs_filter['group_id'] = int(request.query_params.get('group_id'))
-            # строковые поля для фильтра через ILIKE
-            for k in self.filter_fields:
+            # поля integer - поиск только полного совпадения
+            for k in self.filter_int_fields:
+                if k in request.query_params:
+                    qs_filter[k] = int(request.query_params.get(k))
+            # строковые поля - поиск вхождений через ILIKE
+            for k in self.filter_str_fields:
                 if k in request.query_params:
                     qs_filter['%s__icontains' % k] = request.query_params.get(k)
         except Exception as e:

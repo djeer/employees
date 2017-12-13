@@ -32,7 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id',  'email', 'phone', 'password',
                   'first_name', 'middle_name', 'last_name',
                   'office', 'dept', 'job_title',
-                  'group_id', 'role', 'is_ldap',
+                  'group_id', 'role_id', 'is_ldap',
                   'ldap_login',)
         read_only_fields = ('id', 'device')
         extra_kwargs = {'password': {'write_only': True}}
@@ -47,7 +47,7 @@ class UserListSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'phone', 'password',
                   'first_name', 'middle_name', 'last_name',
                   'office', 'dept', 'job_title',
-                  'group_id', 'role', 'is_ldap',
+                  'group_id', 'role_id', 'is_ldap',
                   'device',)
         read_only_fields = ('id',)
         extra_kwargs = {'password': {'write_only': True}}
