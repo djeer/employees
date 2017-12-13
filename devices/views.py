@@ -9,9 +9,9 @@ from django.db import IntegrityError
 from django.db.models import ObjectDoesNotExist
 import datetime
 
-from users.models import User, Device
-from users.serializers.devices import TrackSerializer, DeviceSerializer
-from users.lib import gen_client_key
+from .models import User, Device
+from .serializers import TrackSerializer, DeviceSerializer
+from .lib import gen_client_key
 
 
 class DeviceLogin(APIView):
