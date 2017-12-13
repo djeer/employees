@@ -34,7 +34,7 @@ class User(models.Model):
     job_title = models.TextField(max_length=256, null=True)
     image_uuid = models.TextField(max_length=36, null=True)
 
-    group_id = models.ForeignKey(Group, related_name='users', default=None, on_delete=models.SET_DEFAULT, null=True)
+    group_id = models.ForeignKey(Group, related_name='users', default=0, on_delete=models.SET_DEFAULT, null=False)
     role = models.ForeignKey(Role, related_name='users', default=None, on_delete=models.SET_DEFAULT, null=True)
 
     is_ldap = models.BooleanField(default=False)
