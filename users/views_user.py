@@ -8,7 +8,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from django.db import IntegrityError
-from django.db.models import Max, ObjectDoesNotExist
+from django.db.models import Count
+from django.db.models import ObjectDoesNotExist
 import datetime
 
 from .models import User, Group, Track
@@ -27,9 +28,15 @@ def get_object(model, pk):
 class GroupsList(APIView):
 
     def get(self, request, **kwargs):
+        data = [{
+            "id": None,
+            "name": "Без группы",
+            "count": User.objects.filter(group_id=None).count()
+        }]
         groups = Group.objects.all()
         serializer = GroupListSerializer(groups, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data += serializer.data
+        return Response(data, status=status.HTTP_200_OK)
 
     def post(self, request, **kwargs):
         serializer = GroupSerializer(data=request.data)
