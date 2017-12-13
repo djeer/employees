@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 # Create your views here.
 
-from django.shortcuts import render
 from rest_framework.views import APIView
-from rest_framework.exceptions import NotFound
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
@@ -11,9 +9,9 @@ from django.db import IntegrityError
 from django.db.models import ObjectDoesNotExist
 import datetime
 
-from .models import User, Device
-from .serializers_device import TrackSerializer, DeviceSerializer
-from .lib import gen_client_key
+from users.models import User, Device
+from users.serializers.devices import TrackSerializer, DeviceSerializer
+from users.lib import gen_client_key
 
 
 class DeviceLogin(APIView):

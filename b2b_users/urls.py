@@ -18,6 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^b2b/admin/users/', admin.site.urls),
-    url(r'^b2b/users/', include('users.urls_user')),
-    url(r'^b2b/devices/', include('users.urls_device')),  # Android client API
+    url(r'^b2b/users/', include('users.urls.users')),
+    url(r'^b2b/devices/', include('users.urls.devices')),  # Android client API
 ]

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework import serializers
-from .models import User, Group, Track, Device
+from users.models import User, Group, Track, Device
 
 
 class GroupSerializer(serializers.ModelSerializer):

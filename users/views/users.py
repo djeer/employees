@@ -1,22 +1,18 @@
 # -*- coding: utf-8 -*-
 # Create your views here.
 
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.parsers import JSONParser
 from django.db import IntegrityError
-from django.db.models import Count
-from django.forms.models import model_to_dict
 from django.db.models import ObjectDoesNotExist
-import datetime
 
-from .models import User, Group, Track
-from .serializers_user import UserSerializer, UserListSerializer
-from .serializers_user import GroupSerializer, GroupListSerializer
-from .serializers_user import TrackListSerializer
+
+from users.models import User, Group, Track
+from users.serializers.users import UserSerializer, UserListSerializer
+from users.serializers.users import GroupSerializer, GroupListSerializer
+from users.serializers.users import TrackListSerializer
 
 
 def get_object(model, pk):
