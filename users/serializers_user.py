@@ -57,7 +57,7 @@ class TrackListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Track
-        fields = ('date', 'latitude', 'longitude',)
+        fields = ('user_id', 'date', 'latitude', 'longitude',)
 
 
 class DeviceSerializer(serializers.ModelSerializer):

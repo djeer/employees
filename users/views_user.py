@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from django.db import IntegrityError
-from django.db.models import Max
+from django.db.models import Max, ObjectDoesNotExist
 import datetime
 
 from .models import User, Group, Track
@@ -118,7 +118,15 @@ class TrackList(APIView):
 
 class TrackRecentUpdate(APIView):
 
-    def get(self, request, pk, **kwargs):
-        points = Track.objects.filter(user_id=pk).latest('date')
-        serializer = TrackListSerializer(points)
+    def get(self, request, **kwargs):
+        users = request.query_params.get('id').split(',')
+        users = [int(x) for x in users]
+
+        points = []
+        for i in users:
+            try:
+                points.append(Track.objects.filter(user_id=i).latest('date'))
+            except ObjectDoesNotExist:
+                pass
+        serializer = TrackListSerializer(points, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
