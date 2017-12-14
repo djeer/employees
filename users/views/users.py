@@ -24,15 +24,20 @@ def get_object(model, pk):
         raise NotFound
 
 
-class GroupsList(APIView):
+class AbstractList(APIView):
+
+    def __init__(self, model, serializer):
+        super().__init__()
+        self.model = model
+        self.serializer = serializer
 
     def get(self, request, **kwargs):
-        groups = Group.objects.all()
-        serializer = GroupListSerializer(groups, many=True)
+        items = self.model.objects.all()
+        serializer = self.serializer(items, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, **kwargs):
-        serializer = GroupSerializer(data=request.data)
+        serializer = self.serializer(data=request.data)
         if serializer.is_valid():
             try:
                 serializer.save()
@@ -42,46 +47,28 @@ class GroupsList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class DepartmentsList(APIView):
+class GroupsList(AbstractList):
 
-    def get(self, request, **kwargs):
-        departments = Department.objects.all()
-        serializer = DepartmentSerializer(departments, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request, **kwargs):
-        serializer = DepartmentSerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                serializer.save()
-            except IntegrityError as e:
-                return Response({'detail': str(e)}, status=status.HTTP_409_CONFLICT)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def __init__(self):
+        super().__init__(Group, GroupSerializer)
 
 
-class RolesList(APIView):
+class DepartmentsList(AbstractList):
 
-    def get(self, request, **kwargs):
-        roles = Role.objects.all()
-        serializer = RoleSerializer(roles, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def __init__(self):
+        super().__init__(Department, DepartmentSerializer)
 
-    def post(self, request, **kwargs):
-        serializer = RoleSerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                serializer.save()
-            except IntegrityError as e:
-                return Response({'detail': str(e)}, status=status.HTTP_409_CONFLICT)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class RolesList(AbstractList):
+
+    def __init__(self):
+        super().__init__(Role, RoleSerializer)
 
 
 class UsersList(APIView):
 
     def __init__(self):
-        super(UsersList, self).__init__()
+        super().__init__()
         self.filter_str_fields = ('first_name', 'middle_name', 'last_name', 'dept', 'job_title', 'email', 'phone', )
         self.filter_int_fields = ('group_id', 'role_id', 'group', 'role')
 
