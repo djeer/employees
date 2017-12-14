@@ -78,7 +78,7 @@ class UsersList(APIView):
         query_set = User.objects.all().filter(**qs_filter)
 
         # сортируем и обрезаем
-        query_set = query_set.order_by(order_field)[start:limit]
+        query_set = query_set.order_by(order_field)[start:start+limit]
 
         serializer = UserListSerializer(query_set, many=True)
         response = {
