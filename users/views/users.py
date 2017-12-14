@@ -9,9 +9,10 @@ from django.db import IntegrityError
 from django.db.models import ObjectDoesNotExist
 
 
-from users.models import User, Group, Track
+from users.models import User, Group, Department, Track
 from users.serializers.users import UserSerializer, UserListSerializer
 from users.serializers.users import GroupSerializer, GroupListSerializer
+from users.serializers.users import DepartmentSerializer
 from users.serializers.users import TrackListSerializer
 
 
@@ -31,6 +32,24 @@ class GroupsList(APIView):
 
     def post(self, request, **kwargs):
         serializer = GroupSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                serializer.save()
+            except IntegrityError as e:
+                return Response({'detail': str(e)}, status=status.HTTP_409_CONFLICT)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DepartmentsList(APIView):
+
+    def get(self, request, **kwargs):
+        departments = Department.objects.all()
+        serializer = DepartmentSerializer(departments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, **kwargs):
+        serializer = DepartmentSerializer(data=request.data)
         if serializer.is_valid():
             try:
                 serializer.save()

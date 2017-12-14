@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework import serializers
-from users.models import User, Group, Track, Device
+from users.models import User, Group, Department, Track, Device
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -24,6 +24,14 @@ class GroupListSerializer(serializers.ModelSerializer):
         return obj.users.count()
 
 
+class DepartmentSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = Department
+        fields = ('id', 'name',)
+
+
 class UserSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
 
@@ -31,7 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id',  'email', 'phone', 'password',
                   'first_name', 'middle_name', 'last_name',
-                  'office', 'dept', 'job_title',
+                  'office', 'department_id', 'job_title',
                   'group_id', 'role_id', 'is_ldap',
                   'ldap_login',)
         read_only_fields = ('id', 'device')
@@ -46,7 +54,7 @@ class UserListSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'email', 'phone', 'password',
                   'first_name', 'middle_name', 'last_name',
-                  'office', 'dept', 'job_title',
+                  'office', 'department_id', 'job_title',
                   'group_id', 'role_id', 'is_ldap',
                   'device',)
         read_only_fields = ('id',)
