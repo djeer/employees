@@ -9,9 +9,10 @@ from django.db import IntegrityError
 from django.db.models import ObjectDoesNotExist
 
 
-from users.models import User, Group, Department, Track
+from users.models import User, Group, Role, Department, Track
 from users.serializers.users import UserSerializer, UserListSerializer
 from users.serializers.users import GroupSerializer, GroupListSerializer
+from users.serializers.users import RoleSerializer
 from users.serializers.users import DepartmentSerializer
 from users.serializers.users import TrackListSerializer
 
@@ -50,6 +51,24 @@ class DepartmentsList(APIView):
 
     def post(self, request, **kwargs):
         serializer = DepartmentSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                serializer.save()
+            except IntegrityError as e:
+                return Response({'detail': str(e)}, status=status.HTTP_409_CONFLICT)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RolesList(APIView):
+
+    def get(self, request, **kwargs):
+        roles = Role.objects.all()
+        serializer = RoleSerializer(roles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, **kwargs):
+        serializer = RoleSerializer(data=request.data)
         if serializer.is_valid():
             try:
                 serializer.save()

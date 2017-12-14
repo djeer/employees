@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework import serializers
-from users.models import User, Group, Department, Track, Device
+from users.models import User, Group, Role, Department, Track, Device
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -22,6 +22,14 @@ class GroupListSerializer(serializers.ModelSerializer):
 
     def get_count(self, obj):
         return obj.users.count()
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = Role
+        fields = ('id', 'name',)
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
