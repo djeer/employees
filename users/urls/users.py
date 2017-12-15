@@ -6,7 +6,6 @@ from users.views import users
 urlpatterns = [
     url(r'^$', users.UsersList.as_view(), name='users-list'),
     url(r'^(?P<pk>\d+)/$', users.UsersDetail.as_view(), name='users-detail'),
-    url(r'^groups/$', users.GroupsList.as_view(), name='groups-list'),
     url(r'^departments/$', users.DepartmentsList.as_view(), name='departments-list'),
     url(r'^roles/$', users.RolesList.as_view(), name='departments-list'),
     url(r'^(?P<pk>\d+)/track/$', users.TrackList.as_view(), name='track-list'),
