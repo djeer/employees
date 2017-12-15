@@ -52,7 +52,7 @@ class AbstractList(APIView):
 class GroupsList(AbstractList):
 
     def __init__(self):
-        super().__init__(Group, GroupSerializer)
+        super().__init__(Group, GroupListSerializer)
 
 
 class DepartmentsList(AbstractList):
