@@ -17,10 +17,16 @@ from users.serializers.users import DepartmentSerializer
 from users.serializers.users import TrackListSerializer
 from users.lib.generate_password import generate_password
 from users.lib.queue_notice import queue_notice
-from .abstract_view import AbstractList, get_object
+from .abstract_view import AbstractList, AbstractDetail
 
 
 class DepartmentsList(AbstractList):
+
+    def __init__(self):
+        super().__init__(Department, DepartmentSerializer)
+
+
+class DepartmentsDetail(AbstractDetail):
 
     def __init__(self):
         super().__init__(Department, DepartmentSerializer)

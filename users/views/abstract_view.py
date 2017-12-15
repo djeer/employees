@@ -47,3 +47,32 @@ class AbstractList(APIView):
                 return Response({'detail': str(e)}, status=status.HTTP_409_CONFLICT)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AbstractDetail(APIView):
+    def __init__(self, model, serializer):
+        super().__init__()
+        self.model = model
+        self.serializer = serializer
+
+    def patch(self, request, pk, **kwargs):
+        item = get_object(self.model, pk)
+        # Подставляем объекты вместо айдишников
+        if 'group_id' in request.data:
+            request.data['group_id'] = get_object(Group, request.data['group_id'])
+        if 'role_id' in request.data:
+            request.data['role_id'] = get_object(Role, request.data['role_id'])
+        if 'department_id' in request.data:
+            request.data['department_id'] = get_object(Department, request.data['department_id'])
+        if 'user_id' in request.data:
+            request.data['user_id'] = get_object(User, request.data['user_id'])
+        # Сериализуем
+        serializer = self.serializer()
+        if serializer.update(item, request.data):
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, **kwargs):
+        item = get_object(self.model, pk)
+        item.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
