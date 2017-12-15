@@ -17,54 +17,7 @@ from users.serializers.users import DepartmentSerializer
 from users.serializers.users import TrackListSerializer
 from users.lib.generate_password import generate_password
 from users.lib.queue_notice import queue_notice
-
-
-def get_object(model, pk):
-    try:
-        return model.objects.get(pk=pk)
-    except model.DoesNotExist:
-        raise NotFound
-
-
-class AbstractList(APIView):
-
-    def __init__(self, model, serializer):
-        super().__init__()
-        self.model = model
-        self.serializer = serializer
-
-    def get(self, request, **kwargs):
-        items = self.model.objects.all()
-        serializer = self.serializer(items, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request, **kwargs):
-        serializer = self.serializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                serializer.save()
-            except IntegrityError as e:
-                return Response({'detail': str(e)}, status=status.HTTP_409_CONFLICT)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class GroupsList(AbstractList):
-
-    def __init__(self):
-        super().__init__(Group, GroupListSerializer)
-
-
-class DepartmentsList(AbstractList):
-
-    def __init__(self):
-        super().__init__(Department, DepartmentSerializer)
-
-
-class RolesList(AbstractList):
-
-    def __init__(self):
-        super().__init__(Role, RoleSerializer)
+from .abstract_view import AbstractList, get_object
 
 
 class UsersList(APIView):

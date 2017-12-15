@@ -19,9 +19,10 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^b2b/admin/users/', admin.site.urls),
     # WEB:
-    url(r'^b2b/users/', include('users.urls.users')),
+    url(r'^b2b/departments/', include('users.urls.departments')),
     url(r'^b2b/groups/', include('users.urls.groups')),
     url(r'^b2b/roles/', include('users.urls.roles')),
+    url(r'^b2b/users/', include('users.urls.users')),
     # Android client API
     url(r'^b2b/devices/', include('devices.urls')),
 ]
