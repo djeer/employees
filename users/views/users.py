@@ -15,6 +15,8 @@ from users.serializers.users import GroupSerializer, GroupListSerializer
 from users.serializers.users import RoleSerializer
 from users.serializers.users import DepartmentSerializer
 from users.serializers.users import TrackListSerializer
+from users.lib.generate_password import generate_password
+from users.lib.queue_notice import queue_notice
 
 
 def get_object(model, pk):
@@ -114,13 +116,19 @@ class UsersList(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
     def post(self, request, **kwargs):
-        request.data['password'] = 'qqqqqq'
+        request.data['password'] = generate_password()
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             try:
                 serializer.save()
             except IntegrityError as e:
                 return Response({'detail': str(e)}, status=status.HTTP_409_CONFLICT)
+            notice = {
+                "mail": serializer.data['email'],
+                "subj": "Ваш новый пароль 2bsafe",
+                "text": "Ваш новый пароль 2bsafe: %s" % request.data['password']
+            }
+            queue_notice(notice, 'email')
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
