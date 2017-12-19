@@ -9,11 +9,9 @@ from django.db import IntegrityError
 from django.db.models import ObjectDoesNotExist
 
 
-from users.models import User, Group, Role, Department, Track
+from users.models import User, Group, Role, Department, Track, Device
 from users.serializers.users import UserSerializer, UserListSerializer
-from users.serializers.users import GroupSerializer, GroupListSerializer
-from users.serializers.users import RoleSerializer
-from users.serializers.users import DepartmentSerializer
+from users.serializers.users import DeviceDetailSerializer
 from users.serializers.users import TrackListSerializer
 from users.lib.generate_password import generate_password
 from users.lib.queue_notice import queue_notice
@@ -31,10 +29,9 @@ class UsersList(APIView):
         count = User.objects.count()
         # получаем query params
         try:
-            start = int(request.query_params['start'])
-            limit = int(request.query_params['limit'])
-            order_field = request.query_params['sortf']
-            # поля для фильтров
+            start = int(request.query_params.get('start', 0))
+            limit = int(request.query_params.get('limit', 10))
+            order_field = request.query_params.get('sortf')            # поля для фильтров
             qs_filter = {}
             # поля integer - поиск только полного совпадения
             for k in self.filter_int_fields:
@@ -102,6 +99,14 @@ class UsersDetail(APIView):
         user = get_object(User, pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class DeviceDetail(APIView):
+
+    def get(self, request, pk, **kwargs):
+        device = Device.objects.get(user_id=pk)
+        serializer = DeviceDetailSerializer(device)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class TrackList(APIView):

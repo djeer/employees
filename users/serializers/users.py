@@ -88,3 +88,10 @@ class DeviceSerializer(serializers.ModelSerializer):
         model = Device
         fields = ('id', 'user', 'client_key', 'token', 'model', 'is_ios', 'os_version',)
         read_only_fields = ('id',)
+
+
+class DeviceDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Device
+        fields = ('signal', 'battery',)
