@@ -18,9 +18,11 @@ class DeviceLogin(APIView):
     parser_classes = (JSONParser,)
 
     def post(self, request, **kwargs):
-        user = User.objects.get(email=request.data['em'])
-        if user.password != request.data['pwd']:
+        try:
+            user = User.objects.get(email=request.data['em'], password=request.data['pwd'])
+        except ObjectDoesNotExist as e:
             return Response({'scs': False, 'emsg': 4}, status.HTTP_401_UNAUTHORIZED)
+
         device = {
             'user': user.id,
             'client_key': gen_client_key(),
@@ -69,6 +71,29 @@ class DeviceUpdate(APIView):
                 return Response({'detail': str(e)}, status.HTTP_409_CONFLICT)
             return Response(serializer.data, status.HTTP_200_OK)
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+
+class DeviceUpdateStatus(APIView):
+    parser_classes = (JSONParser,)
+
+    def post(self, request, **kwargs):
+        try:
+            device = Device.objects.get(pk=int(request.data['cid']), client_key=request.data['ckey'])
+        except ObjectDoesNotExist:
+            return Response({'scs': False, 'emsg': 16}, status=466)
+
+        try:
+            device_status = {
+                'battery': request.data['battery'],
+                'signal': request.data['signal']
+            }
+        except Exception as e:
+            return Response({'scs': False, 'emsg': 4, 'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = DeviceSerializer()
+        if serializer.update(device, device_status):
+            return Response({'scs': True}, status=status.HTTP_200_OK)
+        return Response({'scs': False, 'emsg': 4, 'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DeviceLogout(APIView):

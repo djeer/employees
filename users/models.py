@@ -67,8 +67,12 @@ class Device(models.Model):
     login_date = models.DateTimeField(null=False, default=now)
     token = models.TextField()
     model = models.TextField()
+    # os
     is_ios = models.BooleanField()
     os_version = models.TextField()
+    # status
+    battery = models.IntegerField(null=True, default=None)
+    signal = models.IntegerField(null=True, default=None)
 
     def __str__(self):
         return str('My Device Model')
