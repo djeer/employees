@@ -26,7 +26,6 @@ class UsersList(APIView):
         self.filter_int_fields = ('group_id', 'role_id', 'group', 'role')
 
     def get(self, request, **kwargs):
-        count = User.objects.count()
         # получаем query params
         try:
             start = int(request.query_params.get('start', 0))
@@ -52,7 +51,8 @@ class UsersList(APIView):
             order_field = '-'+order_field
 
         # выбираем пользователей с фильтром (распаковываем словарь как аргументы kwargs)
-        query_set = User.objects.all().filter(**qs_filter)
+        query_set = User.objects.filter(**qs_filter)
+        count = query_set.count()
 
         # сортируем и обрезаем
         query_set = query_set.order_by(order_field)[start:start+limit]
