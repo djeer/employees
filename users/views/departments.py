@@ -9,14 +9,8 @@ from django.db import IntegrityError
 from django.db.models import ObjectDoesNotExist
 
 
-from users.models import User, Group, Role, Department, Track
-from users.serializers.users import UserSerializer, UserListSerializer
-from users.serializers.users import GroupSerializer, GroupListSerializer
-from users.serializers.users import RoleSerializer
-from users.serializers.users import DepartmentSerializer
-from users.serializers.users import TrackListSerializer
-from users.lib.generate_password import generate_password
-from users.lib.queue_notice import queue_notice
+from users.models import Department
+from users.serializers.departments import DepartmentSerializer
 from .abstract_view import AbstractList, AbstractDetail
 
 

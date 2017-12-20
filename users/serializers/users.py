@@ -1,48 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework import serializers
-from users.models import User, Group, Role, Department, Track, Device
-
-
-class GroupSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
-    count = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Group
-        fields = ('id', 'name', 'count')
-
-    def get_count(self, obj):
-        return obj.users.count()
-
-
-class GroupListSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
-    count = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Group
-        fields = ('id', 'name', 'count')
-        read_only_fields = ('count',)
-
-    def get_count(self, obj):
-        return obj.users.count()
-
-
-class RoleSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
-
-    class Meta:
-        model = Role
-        fields = ('id', 'name',)
-
-
-class DepartmentSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
-
-    class Meta:
-        model = Department
-        fields = ('id', 'name',)
+from users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -72,26 +31,3 @@ class UserListSerializer(serializers.ModelSerializer):
                   'device',)
         read_only_fields = ('id',)
         extra_kwargs = {'password': {'write_only': True}}
-
-
-class TrackListSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Track
-        fields = ('user_id', 'date', 'latitude', 'longitude',)
-
-
-class DeviceSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
-
-    class Meta:
-        model = Device
-        fields = ('id', 'user', 'client_key', 'token', 'model', 'is_ios', 'os_version',)
-        read_only_fields = ('id',)
-
-
-class DeviceDetailSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Device
-        fields = ('signal', 'battery',)

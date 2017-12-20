@@ -11,8 +11,8 @@ from django.db.models import ObjectDoesNotExist
 
 from users.models import User, Group, Role, Department, Track, Device
 from users.serializers.users import UserSerializer, UserListSerializer
-from users.serializers.users import DeviceDetailSerializer
-from users.serializers.users import TrackListSerializer
+from users.serializers.devices import DeviceDetailSerializer
+from users.serializers.tracks import TrackListSerializer
 from users.lib.generate_password import generate_password
 from users.lib.queue_notice import queue_notice
 from .abstract_view import AbstractList, get_object

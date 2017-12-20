@@ -2,7 +2,7 @@
 # Create your views here.
 
 from users.models import User, Group, Role, Department, Track
-from users.serializers.users import GroupSerializer, GroupListSerializer
+from users.serializers.groups import GroupSerializer, GroupListSerializer
 from .abstract_view import AbstractList, AbstractDetail
 
 
