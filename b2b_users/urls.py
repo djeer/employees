@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^b2b/groups/', include('users.urls.groups')),
     url(r'^b2b/roles/', include('users.urls.roles')),
     url(r'^b2b/users/', include('users.urls.users')),
+    url(r'^b2b/profiles/', include('users.urls.profiles')),
     # Android client API
     url(r'^b2b/devices/', include('devices.urls')),
 ]

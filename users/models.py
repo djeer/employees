@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.utils.timezone import now
-
+from jsonfield import JSONField
 
 class Group(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -76,3 +76,9 @@ class Device(models.Model):
 
     def __str__(self):
         return str('My Device Model')
+
+
+class Profile(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.TextField()
+    body = JSONField()
