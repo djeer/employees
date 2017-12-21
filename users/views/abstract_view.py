@@ -8,15 +8,7 @@ from rest_framework.response import Response
 from django.db import IntegrityError
 from django.db.models import ObjectDoesNotExist
 
-
-from users.models import User, Group, Role, Department, Track
-from users.serializers.users import UserSerializer, UserListSerializer
-from users.serializers.users import GroupSerializer, GroupListSerializer
-from users.serializers.users import RoleSerializer
-from users.serializers.users import DepartmentSerializer
-from users.serializers.users import TrackListSerializer
-from users.lib.generate_password import generate_password
-from users.lib.queue_notice import queue_notice
+from users.models import User, Group, Role, Department
 
 
 def get_object(model, pk):
@@ -54,6 +46,11 @@ class AbstractDetail(APIView):
         super().__init__()
         self.model = model
         self.serializer = serializer
+
+    def get(self, request, pk, **kwargs):
+        items = self.model.objects.get(pk=pk)
+        serializer = self.serializer(items)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, pk, **kwargs):
         item = get_object(self.model, pk)

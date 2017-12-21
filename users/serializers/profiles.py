@@ -11,3 +11,11 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ('id', 'name', 'body')
+
+
+class ProfileListSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = Profile
+        fields = ('id', 'name')
