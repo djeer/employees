@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.timezone import now
 from jsonfield import JSONField
 
+
 class Group(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.TextField(max_length=256, unique=True)

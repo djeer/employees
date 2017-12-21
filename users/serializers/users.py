@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework import serializers
-from users.models import User
+from django.db import models
+from users.models import User, Group, Role
 
 
 class UserSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
+    group_id = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all(), source='group', required=False)
+    role_id = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all(), source='role', required=False)
 
     class Meta:
         model = User
