@@ -15,7 +15,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class ProfileListSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
+    body = serializers.JSONField(write_only=True)
 
     class Meta:
         model = Profile
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'body')
