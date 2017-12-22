@@ -12,9 +12,16 @@ class Group(models.Model):
         return str(self.name)
 
 
+class Profile(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.TextField()
+    body = JSONField()
+
+
 class Role(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.TextField(max_length=256, unique=True)
+    profile = models.ForeignKey(Profile, related_name='roles', on_delete=models.SET_DEFAULT, default=None, null=True)
 
     def __str__(self):
         return str(self.name)
@@ -44,7 +51,7 @@ class User(models.Model):
 
     group = models.ForeignKey(Group, related_name='users', default=0, on_delete=models.SET_DEFAULT, null=False)
     role = models.ForeignKey(Role, related_name='users', default=0, on_delete=models.SET_DEFAULT, null=False)
-    department = models.ForeignKey(Department, related_name='departments', default=0, on_delete=models.SET_DEFAULT, null=False)
+    department = models.ForeignKey(Department, related_name='users', default=0, on_delete=models.SET_DEFAULT, null=False)
 
     is_ldap = models.BooleanField(default=False)
     is_blocked = models.BooleanField(default=False)
@@ -76,10 +83,4 @@ class Device(models.Model):
     signal = models.IntegerField(null=True, default=None)
 
     def __str__(self):
-        return str('My Device Model')
-
-
-class Profile(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    name = models.TextField()
-    body = JSONField()
+        return str(self.model)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework import serializers
-from users.models import Profile
+from users.models import Profile, Role
 
 
 class ProfileSerializer(serializers.ModelSerializer):
