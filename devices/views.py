@@ -10,7 +10,7 @@ from django.db.models import ObjectDoesNotExist
 import datetime
 
 from .models import User, Device
-from .serializers import TrackSerializer, DeviceSerializer
+from .serializers import TrackSerializer, DeviceSerializer, ProfileSerializer
 from .lib import gen_client_key
 
 
@@ -94,6 +94,21 @@ class DeviceUpdateStatus(APIView):
         if serializer.update(device, device_status):
             return Response({'scs': True}, status=status.HTTP_200_OK)
         return Response({'scs': False, 'emsg': 4, 'detail': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeviceProfile(APIView):
+    parser_classes = (JSONParser,)
+
+    def post(self, request, **kwargs):
+        try:
+            device = Device.objects.get(pk=int(request.data['cid']), client_key=request.data['ckey'])
+        except ObjectDoesNotExist:
+            return Response({'scs': False, 'emsg': 16}, status=466)
+
+        profile = device.user.role.profile
+
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
 
 
 class DeviceLogout(APIView):
