@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework import serializers
-from users.models import Track, Device
+from .models import Track, Device, Profile
 
 
 class TrackSerializer(serializers.ModelSerializer):
@@ -20,3 +20,12 @@ class DeviceSerializer(serializers.ModelSerializer):
         model = Device
         fields = ('id', 'user', 'client_key', 'token', 'model', 'is_ios', 'os_version',)
         read_only_fields = ('id',)
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+    body = serializers.JSONField()
+
+    class Meta:
+        model = Profile
+        fields = ('id', 'name', 'body')
