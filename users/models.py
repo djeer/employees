@@ -4,18 +4,19 @@ from django.utils.timezone import now
 from jsonfield import JSONField
 
 
-class Group(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    name = models.TextField(max_length=256, unique=True)
-
-    def __str__(self):
-        return str(self.name)
-
-
 class Profile(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.TextField()
     body = JSONField()
+
+
+class Group(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.TextField(max_length=256, unique=True)
+    profile = models.ForeignKey(Profile, related_name='groups', on_delete=models.SET_DEFAULT, default=None, null=True)
+
+    def __str__(self):
+        return str(self.name)
 
 
 class Role(models.Model):
