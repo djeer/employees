@@ -34,3 +34,14 @@ class UserListSerializer(serializers.ModelSerializer):
                   'device',)
         read_only_fields = ('id', 'device',)
         extra_kwargs = {'password': {'write_only': True}}
+
+
+class UserExcelSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
+
+    class Meta:
+        model = User
+        fields = ('id',  'email', 'phone',
+                  'first_name', 'middle_name', 'last_name',
+                  'office', 'job_title',)
+        read_only_fields = ('id',)
