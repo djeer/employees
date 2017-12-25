@@ -7,8 +7,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.db import IntegrityError
 from django.db.models import ObjectDoesNotExist
-import pandas
-from rest_framework.parsers import MultiPartParser
+import logging
+from rest_framework.parsers import FileUploadParser
 
 from users.models import User, Group, Role, Department, Track, Device
 from users.serializers.users import UserSerializer, UserListSerializer, UserExcelSerializer
@@ -16,8 +16,10 @@ from users.serializers.devices import DeviceDetailSerializer
 from users.serializers.tracks import TrackListSerializer
 from users.lib.generate_password import generate_password
 from users.lib.queue_notice import queue_notice
-from .abstract_view import AbstractList, get_object
+from .abstract_view import get_object
 from users.lib.excel_to_model import excel_to_models
+
+logger = logging.getLogger()
 
 
 class UsersList(APIView):
@@ -133,10 +135,10 @@ class TrackRecentUpdate(APIView):
 
 
 class UsersExcel(APIView):
-    parser_classes = (MultiPartParser,)
+    parser_classes = (FileUploadParser,)
 
     def put(self, request, **kwargs):
-        file_obj = request.FILES['file']
+        file_obj = request.data['file']#request.FILES['file']
         num_ok, num_err = excel_to_models(file_obj, UserExcelSerializer)
 
         return Response({'num_ok': num_ok, 'num_err': num_err})
