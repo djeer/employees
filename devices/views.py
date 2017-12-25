@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Create your views here.
 
+import logging
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
@@ -13,6 +14,8 @@ from .models import User, Device
 from .serializers import TrackSerializer, DeviceSerializer, ProfileSerializer
 from .lib import gen_client_key
 
+logger = logging.getLogger()
+
 
 class DeviceLogin(APIView):
     parser_classes = (JSONParser,)
@@ -22,6 +25,9 @@ class DeviceLogin(APIView):
             user = User.objects.get(email=request.data['em'], password=request.data['pwd'])
         except ObjectDoesNotExist as e:
             return Response({'scs': False, 'emsg': 4}, status.HTTP_401_UNAUTHORIZED)
+
+        # delete old device
+        Device.objects.filter(user=user).delete()
 
         device = {
             'user': user.id,
@@ -33,11 +39,10 @@ class DeviceLogin(APIView):
         }
         serializer = DeviceSerializer(data=device)
         if not serializer.is_valid():
+            logger.warning(serializer.errors)
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
         try:
-            # Удаляем старое устройство
-            Device.objects.filter(user=user).delete()
-            # Сохраняем новое
+            # Сохраняем устройство
             serializer.save()
         except IntegrityError as e:
             return Response({'detail': str(e)}, status.HTTP_409_CONFLICT)
