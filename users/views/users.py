@@ -137,6 +137,6 @@ class UsersExcel(APIView):
 
     def put(self, request, **kwargs):
         file_obj = request.FILES['file']
-        excel_to_models(file_obj, UserExcelSerializer)
+        num_ok, num_err = excel_to_models(file_obj, UserExcelSerializer)
 
-        return Response({'ok': 'ok'})
+        return Response({'num_ok': num_ok, 'num_err': num_err})

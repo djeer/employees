@@ -13,8 +13,13 @@ def excel_to_models(file_obj, model_serializer):
     :return:
     """
     df = parse_excel(file_obj)
+    num_ok, num_err = 0, 0
     for row in df.to_dict('records'):
-        row_to_model(row, model_serializer)
+        if row_to_model(row, model_serializer):
+            num_ok += 1
+        else:
+            num_err +=1
+    return num_ok, num_err
 
 
 def parse_excel(file_obj):
@@ -36,5 +41,7 @@ def row_to_model(row, model_serializer):
     if serializer.is_valid():
         logger.warning(serializer.validated_data)
         serializer.save()
+        return True
     else:
         logger.warning(serializer.errors)
+        return False
