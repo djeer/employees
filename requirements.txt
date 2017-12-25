@@ -3,3 +3,5 @@ djangorestframework==3.7.3
 kombu
 requests
 jsonfield
+pandas
+xlrd

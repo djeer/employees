@@ -7,15 +7,17 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.db import IntegrityError
 from django.db.models import ObjectDoesNotExist
-
+import pandas
+from rest_framework.parsers import MultiPartParser
 
 from users.models import User, Group, Role, Department, Track, Device
-from users.serializers.users import UserSerializer, UserListSerializer
+from users.serializers.users import UserSerializer, UserListSerializer, UserExcelSerializer
 from users.serializers.devices import DeviceDetailSerializer
 from users.serializers.tracks import TrackListSerializer
 from users.lib.generate_password import generate_password
 from users.lib.queue_notice import queue_notice
 from .abstract_view import AbstractList, get_object
+from users.lib.excel_to_model import excel_to_models
 
 
 class UsersList(APIView):
@@ -128,3 +130,13 @@ class TrackRecentUpdate(APIView):
                 pass
         serializer = TrackListSerializer(points, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UsersExcel(APIView):
+    parser_classes = (MultiPartParser,)
+
+    def put(self, request, **kwargs):
+        file_obj = request.FILES['file']
+        excel_to_models(file_obj, UserExcelSerializer)
+
+        return Response({'ok': 'ok'})

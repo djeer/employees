@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/track/$', users.TrackList.as_view(), name='track-list'),
     url(r'^(?P<pk>\d+)/device/$', users.DeviceDetail.as_view(), name='device-detail'),
     url(r'^geo/$', users.TrackRecentUpdate.as_view(), name='track-last-update'),
+    url(r'^excel/$', users.UsersExcel.as_view(), name='excel'),
 ]
