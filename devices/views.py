@@ -24,7 +24,7 @@ class DeviceLogin(APIView):
         try:
             user = User.objects.get(email=request.data['em'], password=request.data['pwd'])
         except ObjectDoesNotExist as e:
-            return Response({'scs': False, 'emsg': 4}, status.HTTP_401_UNAUTHORIZED)
+            return Response({'scs': False, 'emsg': 1}, status.HTTP_401_UNAUTHORIZED)
 
         # delete old device
         Device.objects.filter(user=user).delete()
@@ -61,7 +61,7 @@ class DeviceUpdate(APIView):
         try:
             device = Device.objects.get(pk=int(request.data['cid']), client_key=request.data['ckey'])
         except ObjectDoesNotExist:
-            return Response({'scs': False, 'emsg': 16}, status=466)
+            return Response({'scs': False, 'emsg': 1}, status.HTTP_401_UNAUTHORIZED)
         geo = {
             'user': device.user.id,
             'latitude': request.data['geo']['lat'],
@@ -85,7 +85,7 @@ class DeviceUpdateStatus(APIView):
         try:
             device = Device.objects.get(pk=int(request.data['cid']), client_key=request.data['ckey'])
         except ObjectDoesNotExist:
-            return Response({'scs': False, 'emsg': 16}, status=466)
+            return Response({'scs': False, 'emsg': 1}, status.HTTP_401_UNAUTHORIZED)
 
         try:
             device_status = {
@@ -108,7 +108,7 @@ class DeviceProfile(APIView):
         try:
             device = Device.objects.get(pk=int(request.data['cid']), client_key=request.data['ckey'])
         except ObjectDoesNotExist:
-            return Response({'scs': False, 'emsg': 16}, status=466)
+            return Response({'scs': False, 'emsg': 1}, status.HTTP_401_UNAUTHORIZED)
 
         profile = device.user.role.profile
 
@@ -123,12 +123,12 @@ class DeviceLogout(APIView):
         try:
             device = Device.objects.get(pk=int(request.data['cid']), client_key=request.data['ckey'])
         except ObjectDoesNotExist:
-            return Response({'scs': False, 'emsg': 16}, status=466)
+            return Response({'scs': False, 'emsg': 1}, status.HTTP_401_UNAUTHORIZED)
         if device.client_key == request.data['ckey'] and device.user.password == request.data['pwd']:
             device.delete()
             return Response({'scs': True})
         else:
-            return Response({'scs': False, 'emsg': 4}, status.HTTP_401_UNAUTHORIZED)
+            return Response({'scs': False, 'emsg': 1}, status.HTTP_401_UNAUTHORIZED)
 
 
 class DummyView(APIView):
