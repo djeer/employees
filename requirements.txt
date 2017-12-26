@@ -5,3 +5,4 @@ requests
 jsonfield
 pandas
 xlrd
+psycopg2
