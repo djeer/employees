@@ -22,7 +22,6 @@ class Group(models.Model):
 class Role(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.TextField(max_length=256, unique=True)
-    profile = models.ForeignKey(Profile, related_name='roles', on_delete=models.SET_DEFAULT, default=None, null=True)
 
     def __str__(self):
         return str(self.name)
