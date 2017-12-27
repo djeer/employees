@@ -6,3 +6,4 @@ jsonfield
 pandas
 xlrd
 psycopg2
+singleton-decorator
