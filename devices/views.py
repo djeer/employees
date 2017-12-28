@@ -10,7 +10,7 @@ from django.db import IntegrityError
 from django.db.models import ObjectDoesNotExist
 import datetime
 
-from .models import User, Device
+from .models import User, Device, Profile
 from .serializers import TrackSerializer, DeviceSerializer, ProfileSerializer
 from .lib import gen_client_key
 
@@ -110,7 +110,10 @@ class DeviceProfile(APIView):
         except ObjectDoesNotExist:
             return Response({'scs': False, 'emsg': 1}, status.HTTP_401_UNAUTHORIZED)
 
-        profile = device.user.role.profile
+        if request.data.get('profile_id'):
+            profile = Profile.objects.get(pk=request.data['profile_id'])
+        else:
+            profile = device.user.group.profile
 
         serializer = ProfileSerializer(profile)
         return Response(serializer.data)
