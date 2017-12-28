@@ -9,7 +9,7 @@ import requests
 
 logger = logging.getLogger()
 
-TASKS_URL = "https://lkn.safec.ru/b2b/tasks/"
+TASKS_URL = "https://lkn.safec.ru/b2b/tasks/internal/queue/"
 
 
 class TaskType(enum.Enum):
