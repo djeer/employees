@@ -67,7 +67,7 @@ class User(models.Model):
     is_blocked = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.id+' '+self.email)
+        return str(self.id)+' '+str(self.email)
 
     # переопределяем метод save, чтобы автоматически содзавать задачу на смену профиля
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
