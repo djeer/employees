@@ -2,6 +2,7 @@
 # Create your views here.
 
 import logging
+import json
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
@@ -22,12 +23,16 @@ class PushDevice(APIView):
     def post(self, request, **kwargs):
         try:
             device_id = request.data['device_id']
-            notice = request.data['body']
+            body = request.data['body']
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         token = Device.objects.get(pk=device_id).token
-
-        queue_notice(token, notice)
+        # отправляем пуш на клиента
+        notice = {
+            "token": token,
+            "data": body
+        }
+        queue_notice(json.dumps(notice), 'push')
 
         return Response(status=status.HTTP_204_NO_CONTENT)
