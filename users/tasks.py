@@ -50,6 +50,12 @@ class TaskQueue:
 
     @staticmethod
     def push_one(task: Task):
+        try:
+            device_name = task.user.device.model
+        except models.ObjectDoesNotExist:
+            logger.warning('device is not connected')
+            return
+
         task_name = task.get_name()
         task_detail = task.get_detail()
         task_data = {
@@ -58,7 +64,7 @@ class TaskQueue:
             "user_group": task.user.group.name,
             "name": task_name,
             "description": task_detail,
-            "device_name": task.user.device.model
+            "device_name": device_name
         }
         try:
             r = requests.post(TASKS_URL, json=task_data)
