@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 import enum
 import queue
+import logging
 
+from django.db import models
 from singleton_decorator import singleton
 import requests
-from users.models import User
+
+logger = logging.getLogger()
 
 TASKS_URL = "https://lkn.safec.ru/b2b/tasks/"
 
@@ -15,7 +18,8 @@ class TaskType(enum.Enum):
 
 
 class Task:
-    def __init__(self, user: User, task_type: TaskType):
+
+    def __init__(self, user, task_type: TaskType):
         self.user = user
         self.type = task_type
 
@@ -31,7 +35,7 @@ class Task:
         return self.get_name()
 
 
-@singleton
+#@singleton
 class TaskQueue:
     def __init__(self):
         self.tasks = queue.Queue()
@@ -44,7 +48,8 @@ class TaskQueue:
             task = self.tasks.get()
             self.push_one(task)
 
-    def push_one(self, task: Task):
+    @staticmethod
+    def push_one(task: Task):
         task_name = task.get_name()
         task_detail = task.get_detail()
         task_data = {
@@ -59,6 +64,7 @@ class TaskQueue:
             r = requests.post(TASKS_URL, json=task_data)
             if r.status_code != 201:
                 raise IOError(f"response code: {str(r.status_code)}, body: {str(r.text)}")
+            logger.warning('pushed task %s' % str(task_data))
         except Exception as e:
             raise IOError("Can't add task: %s because of: %s" % (str(task_data), str(e)))
 

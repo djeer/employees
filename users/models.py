@@ -2,6 +2,11 @@
 from django.db import models
 from django.utils.timezone import now
 from jsonfield import JSONField
+import logging
+
+from users.tasks import Task, TaskType, TaskQueue
+
+logger = logging.getLogger()
 
 
 class Profile(models.Model):
@@ -36,6 +41,11 @@ class Department(models.Model):
 
 
 class User(models.Model):
+
+    def __init__(self, *args, **kwargs):
+        super(User, self).__init__(*args, **kwargs)
+        self.old_group_id = self.group_id
+
     id = models.BigAutoField(primary_key=True)
     ldap_login = models.TextField(max_length=256, unique=True, null=True)
     password = models.TextField(max_length=64, null=True)
@@ -58,6 +68,15 @@ class User(models.Model):
 
     def __str__(self):
         return str(self.id+' '+self.email)
+
+    # переопределяем метод save, чтобы автоматически содзавать задачу на смену профиля
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        logger.warning(f"old group_id: {str(self.old_group_id)}, new group_id: {str(self.group_id)}")
+        if self.old_group_id != self.group_id:
+            task = Task(self, TaskType.PUSH_PROFILE)
+            TaskQueue.push_one(task)
+        super(User, self).save(force_insert, force_update, using, update_fields)
+        self.old_group_id = self.group_id
 
 
 class Track(models.Model):
