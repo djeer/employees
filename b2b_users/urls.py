@@ -26,4 +26,6 @@ urlpatterns = [
     url(r'^b2b/profiles/', include('users.urls.profiles')),
     # Android client API
     url(r'^b2b/devices/', include('devices.urls')),
+    # Internal API TODO: rewrite
+    url(r'^b2b/devices/internal/', include('internal.urls')),
 ]
