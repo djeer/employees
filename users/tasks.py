@@ -12,24 +12,24 @@ logger = logging.getLogger()
 TASKS_URL = "https://lkn.safec.ru/b2b/tasks/internal/queue/"
 
 
-class TaskType(enum.Enum):
-    PUSH_PROFILE = 'push_profile'
+class TaskActions(enum.Enum):
+    APPLY_PROFILE = 'apply_profile'
     DISCONNECT_DEVICE = 'disconnect_device'
 
 
 class Task:
 
-    def __init__(self, user, task_type: TaskType):
+    def __init__(self, user, task_action: TaskActions):
         self.user = user
-        self.type = task_type
+        self.action = task_action
 
     def get_name(self):
-        if self.type == TaskType.PUSH_PROFILE:
+        if self.action == TaskActions.APPLY_PROFILE:
             return "Смена роли"
-        elif self.type == TaskType.DISCONNECT_DEVICE:
+        elif self.action == TaskActions.DISCONNECT_DEVICE:
             return "Отключить устройство"
         else:
-            raise ValueError('unknown task type: %s' % str(self.type))
+            raise ValueError('unknown task type: %s' % str(self.action))
 
     def get_detail(self):
         return self.get_name()
@@ -51,7 +51,9 @@ class TaskQueue:
     @staticmethod
     def push_one(task: Task):
         try:
+            device_id = task.user.device.id
             device_name = task.user.device.model
+            profile_id = task.user.group.profile_id
         except models.ObjectDoesNotExist:
             logger.warning('device is not connected')
             return
@@ -64,7 +66,10 @@ class TaskQueue:
             "user_group": task.user.group.name,
             "name": task_name,
             "description": task_detail,
-            "device_name": device_name
+            "device_id": device_id,
+            "device_name": device_name,
+            "action": task.action.value,
+            "options": {"profile_id": profile_id}
         }
         try:
             r = requests.post(TASKS_URL, json=task_data)
