@@ -9,12 +9,16 @@ from rest_framework.parsers import JSONParser
 from django.db import IntegrityError
 from django.db.models import ObjectDoesNotExist
 import datetime
+import requests
 
 from .models import User, Device, Profile
 from .serializers import TrackSerializer, DeviceSerializer, ProfileSerializer
 from .lib import gen_client_key
 
 logger = logging.getLogger()
+
+
+INTERNAL_TASKS_URL = 'https://lkn.safec.ru/b2b/tasks/internal/tasks/'
 
 
 class DeviceLogin(APIView):
@@ -134,7 +138,30 @@ class DeviceLogout(APIView):
             return Response({'scs': False, 'emsg': 1}, status.HTTP_401_UNAUTHORIZED)
 
 
+class TaskStatus(APIView):
+
+    def post(self, request, **kwargs):
+        try:
+            device = Device.objects.get(pk=int(request.data['cid']), client_key=request.data['ckey'])
+        except ObjectDoesNotExist:
+            return Response({'scs': False, 'emsg': 1}, status.HTTP_401_UNAUTHORIZED)
+        logger.warning('task update request: %s ' % str(request.data))
+
+        task_url = f"{INTERNAL_TASKS_URL}{str(request.data['task_id'])}/"
+        data = {"status": 1}
+        r = requests.patch(task_url, json=data)
+        if r.status_code != 204:
+            raise IOError('could not patch task!')
+
+        return Response({'scs': True})
+
+
 class DummyView(APIView):
 
     def post(self, request, **kwargs):
+        try:
+            device = Device.objects.get(pk=int(request.data['cid']), client_key=request.data['ckey'])
+        except ObjectDoesNotExist:
+            return Response({'scs': False, 'emsg': 1}, status.HTTP_401_UNAUTHORIZED)
+        logger.warning('dummy request: %s ' % str(request.data))
         return Response({'scs': True})

@@ -9,7 +9,7 @@ import requests
 
 logger = logging.getLogger()
 
-TASKS_URL = "https://lkn.safec.ru/b2b/tasks/internal/queue/"
+INTERNAL_TASKS_URL = "https://lkn.safec.ru/b2b/tasks/internal/tasks/"
 
 
 class TaskActions(enum.Enum):
@@ -72,7 +72,7 @@ class TaskQueue:
             "options": {"profile_id": profile_id}
         }
         try:
-            r = requests.post(TASKS_URL, json=task_data)
+            r = requests.post(INTERNAL_TASKS_URL, json=task_data)
             if r.status_code != 201:
                 raise IOError(f"response code: {str(r.status_code)}, body: {str(r.text)}")
             logger.warning('pushed task %s' % str(task_data))

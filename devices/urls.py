@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^geo/$', views.DeviceUpdate.as_view(), name='device-geo'),
     url(r'^status/$', views.DeviceUpdateStatus.as_view(), name='device-status'),
     url(r'^profile/$', views.DeviceProfile.as_view(), name='device-profile'),
+    url(r'^task_status/$', views.TaskStatus.as_view()),
     url(r'^apps/$', views.DummyView.as_view()),
     url(r'^token/$', views.DummyView.as_view()),
     url(r'^batch/$', views.DummyView.as_view()),
