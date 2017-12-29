@@ -148,7 +148,12 @@ class TaskStatus(APIView):
         logger.warning('task update request: %s ' % str(request.data))
 
         task_url = f"{INTERNAL_TASKS_URL}{str(request.data['task_id'])}/"
-        data = {"status": 1}
+
+        if request.data.get('status') == 'finished':
+            data = {"status": 1}
+        else:
+            data = {"status": -1}
+
         r = requests.patch(task_url, json=data)
         if r.status_code != 204:
             raise IOError('could not patch task!')
