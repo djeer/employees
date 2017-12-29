@@ -4,7 +4,7 @@ from django.utils.timezone import now
 from jsonfield import JSONField
 import logging
 
-from users.tasks import Task, TaskType, TaskQueue
+from users.tasks import Task, TaskActions, TaskQueue
 
 logger = logging.getLogger()
 
@@ -73,7 +73,7 @@ class User(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         logger.warning(f"old group_id: {str(self.old_group_id)}, new group_id: {str(self.group_id)}")
         if self.old_group_id != self.group_id:
-            task = Task(self, TaskType.PUSH_PROFILE)
+            task = Task(self, TaskActions.APPLY_PROFILE)
             TaskQueue.push_one(task)
         super(User, self).save(force_insert, force_update, using, update_fields)
         self.old_group_id = self.group_id
