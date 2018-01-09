@@ -18,6 +18,7 @@ from users.lib.generate_password import generate_password
 from users.lib.queue_notice import queue_notice
 from .abstract_view import get_object
 from users.lib.excel_to_model import excel_to_models
+from users.lib.jwt import token_required
 
 logger = logging.getLogger()
 
@@ -29,6 +30,7 @@ class UsersList(APIView):
         self.filter_str_fields = ('first_name', 'middle_name', 'last_name', 'dept', 'job_title', 'email', 'phone', )
         self.filter_int_fields = ('group_id', 'role_id', 'group', 'role')
 
+    @token_required
     def get(self, request, **kwargs):
         # получаем query params
         try:
