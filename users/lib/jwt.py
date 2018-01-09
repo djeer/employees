@@ -12,9 +12,12 @@ logger = logging.getLogger()
 def token_required(f):
     @wraps(f)
     def decorated(self, request, *args, **kwargs):
-        #token = request.META.get('HTTP_X_ACCESS_TOKEN')
-        token = request.META.get('HTTP_AUTHORIZATION').split()[1]
-        if not token:
+        try:
+            #token = request.META.get('HTTP_X_ACCESS_TOKEN')
+            token = request.META.get('HTTP_AUTHORIZATION').split()[1]
+            if not token:
+                raise AttributeError
+        except AttributeError:
             logger.warning('token is MISSING:'+ str(request.META))
             return JsonResponse({'message': 'Token is missing!'}, status=401)
 
