@@ -18,22 +18,32 @@ from django.contrib import admin
 from rest_framework_swagger.views import get_swagger_view
 from rest_framework.documentation import include_docs_urls
 
-schema_view = get_swagger_view(title='Users API')
 
-urlpatterns = [
-    # Docs
-    url(r'^b2b/users/docs/$', schema_view),
-    url(r'^b2b/users/docs2/', include_docs_urls(title='My API title')),
-    # Admin
-    url(r'^b2b/admin/users/', admin.site.urls),
+urlpatterns_web = [
     # WEB:
     url(r'^b2b/departments/', include('users.urls.departments')),
     url(r'^b2b/groups/', include('users.urls.groups')),
     url(r'^b2b/roles/', include('users.urls.roles')),
     url(r'^b2b/users/', include('users.urls.users')),
     url(r'^b2b/profiles/', include('users.urls.profiles')),
+]
+
+urlpatterns_devices = [
     # Android client API
     url(r'^b2b/devices/', include('devices.urls')),
-    # Internal API TODO: rewrite
-    url(r'^b2b/devices/internal/', include('internal.urls')),
 ]
+
+urlpatterns_docs = [
+    # Docs
+    url(r'^b2b/users/docs2/$', get_swagger_view(title='Users API', patterns=urlpatterns_web)),
+    url(r'^b2b/users/docs/', include_docs_urls(title='Users API', patterns=urlpatterns_web)),
+    url(r'^b2b/users/devices-docs2/$', get_swagger_view(title='Devices API', patterns=urlpatterns_devices)),
+    url(r'^b2b/users/devices-docs/', include_docs_urls(title='Devices API', patterns=urlpatterns_devices)),
+]
+
+urlpatterns = list([
+    # Admin
+    url(r'^b2b/admin/users/', admin.site.urls),
+    # Internal API TODO: rewrite url
+    url(r'^b2b/devices/internal/', include('internal.urls')),
+] + urlpatterns_docs + urlpatterns_web + urlpatterns_devices)

@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 # Create your views here.
 
-from users.models import User, Group, Role, Department, Track
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
+
+from users.models import Role
 from users.serializers.roles import RoleSerializer
-from .abstract_view import AbstractList, AbstractDetail
 
 
-class RolesList(AbstractList):
+class RolesList(generics.ListCreateAPIView):
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
+    permission_classes = (AllowAny,)
 
-    def __init__(self):
-        super().__init__(Role, RoleSerializer)
 
-
-class RolesDetail(AbstractDetail):
-
-    def __init__(self):
-        super().__init__(Role, RoleSerializer)
+class RolesDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
+    permission_classes = (AllowAny,)

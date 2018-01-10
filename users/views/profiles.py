@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 # Create your views here.
 
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
+
 from users.models import Profile
 from users.serializers.profiles import ProfileSerializer, ProfileListSerializer
-from .abstract_view import AbstractList, AbstractDetail
 
 
-class ProfileList(AbstractList):
+class ProfileList(generics.ListCreateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileListSerializer
+    permission_classes = (AllowAny,)
 
-    def __init__(self):
-        super().__init__(Profile, ProfileListSerializer)
 
-
-class ProfileDetail(AbstractDetail):
-
-    def __init__(self):
-        super().__init__(Profile, ProfileSerializer)
+class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = (AllowAny,)
