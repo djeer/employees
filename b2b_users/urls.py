@@ -16,12 +16,14 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework_swagger.views import get_swagger_view
+from rest_framework.documentation import include_docs_urls
 
 schema_view = get_swagger_view(title='Users API')
 
 urlpatterns = [
     # Docs
     url(r'^b2b/users/docs/$', schema_view),
+    url(r'^b2b/users/docs2/', include_docs_urls(title='My API title')),
     # Admin
     url(r'^b2b/admin/users/', admin.site.urls),
     # WEB:

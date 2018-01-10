@@ -1,26 +1,20 @@
 # -*- coding: utf-8 -*-
 # Create your views here.
 
-from rest_framework.views import APIView
-from rest_framework.exceptions import NotFound
-from rest_framework import status
-from rest_framework.response import Response
-from django.db import IntegrityError
-from django.db.models import ObjectDoesNotExist
-
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
 
 from users.models import Department
 from users.serializers.departments import DepartmentSerializer
-from .abstract_view import AbstractList, AbstractDetail
 
 
-class DepartmentsList(AbstractList):
+class DepartmentsList(generics.ListCreateAPIView):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
+    permission_classes = (AllowAny,)
 
-    def __init__(self):
-        super().__init__(Department, DepartmentSerializer)
 
-
-class DepartmentsDetail(AbstractDetail):
-
-    def __init__(self):
-        super().__init__(Department, DepartmentSerializer)
+class DepartmentsDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = DepartmentSerializer
+    queryset = Department.objects.all()
+    permission_classes = (AllowAny,)
