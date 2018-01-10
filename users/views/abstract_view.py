@@ -9,6 +9,7 @@ from django.db import IntegrityError
 from django.db.models import ObjectDoesNotExist
 
 from users.models import User, Group, Role, Department
+from users.lib.jwt import token_required
 
 
 def get_object(model, pk):
@@ -25,11 +26,13 @@ class AbstractList(APIView):
         self.model = model
         self.serializer = serializer
 
+    @token_required
     def get(self, request, **kwargs):
         items = self.model.objects.all()
         serializer = self.serializer(items, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @token_required
     def post(self, request, **kwargs):
         serializer = self.serializer(data=request.data)
         if serializer.is_valid():
@@ -47,11 +50,13 @@ class AbstractDetail(APIView):
         self.model = model
         self.serializer = serializer
 
+    @token_required
     def get(self, request, pk, **kwargs):
         items = self.model.objects.get(pk=pk)
         serializer = self.serializer(items)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @token_required
     def patch(self, request, pk, **kwargs):
         item = get_object(self.model, pk)
         # Подставляем объекты вместо айдишников
@@ -69,6 +74,7 @@ class AbstractDetail(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @token_required
     def delete(self, request, pk, **kwargs):
         item = get_object(self.model, pk)
         item.delete()

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -144,3 +145,7 @@ REST_FRAMEWORK = {
     #    'rest_framework.authentication.BasicAuthentication',
     #),
 }
+
+JWT_SECRET_KEY = 'QWERTYUIOP1234567890'
+JWT_TIMEOUT = timedelta(minutes=2)
+JWT_REFRESH_TIMEOUT = timedelta(minutes=60)
