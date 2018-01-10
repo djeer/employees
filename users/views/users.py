@@ -71,6 +71,7 @@ class UsersList(APIView):
         }
         return Response(response, status=status.HTTP_200_OK)
 
+    @token_required
     def post(self, request, **kwargs):
         request.data['password'] = generate_password()
         serializer = UserSerializer(data=request.data)
@@ -91,6 +92,7 @@ class UsersList(APIView):
 
 class UsersDetail(APIView):
 
+    @token_required
     def patch(self, request, pk, **kwargs):
         user = get_object(User, pk)
         serializer = UserSerializer()
@@ -98,6 +100,7 @@ class UsersDetail(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @token_required
     def delete(self, request, pk, **kwargs):
         user = get_object(User, pk)
         user.delete()
@@ -106,6 +109,7 @@ class UsersDetail(APIView):
 
 class DeviceDetail(APIView):
 
+    @token_required
     def get(self, request, pk, **kwargs):
         device = Device.objects.get(user_id=pk)
         serializer = DeviceDetailSerializer(device)
@@ -114,6 +118,7 @@ class DeviceDetail(APIView):
 
 class TrackList(APIView):
 
+    @token_required
     def get(self, request, pk, **kwargs):
         points = Track.objects.filter(user_id=pk).order_by('date')
         serializer = TrackListSerializer(points, many=True)
@@ -122,6 +127,7 @@ class TrackList(APIView):
 
 class TrackRecentUpdate(APIView):
 
+    @token_required
     def get(self, request, **kwargs):
         users = request.query_params.get('id').split(',')
         users = [int(x) for x in users]
@@ -139,6 +145,7 @@ class TrackRecentUpdate(APIView):
 class UsersExcel(APIView):
     parser_classes = (FileUploadParser,)
 
+    @token_required
     def put(self, request, **kwargs):
         file_obj = request.data['file']#request.FILES['file']
         num_ok, num_err = excel_to_models(file_obj, UserExcelSerializer)
