@@ -27,10 +27,13 @@ class DepartmentsDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     get:
     Просмотр подразделения
+
     put:
     Измение подразделения
+
     patch:
     Частичное измение подразделения
+
     delete:
     Удаление подразделения
     """
