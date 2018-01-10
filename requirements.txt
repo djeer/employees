@@ -8,3 +8,4 @@ xlrd
 psycopg2
 singleton-decorator
 pyjwt
+django-rest-swagger
