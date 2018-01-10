@@ -33,17 +33,23 @@ urlpatterns_devices = [
     url(r'^b2b/devices/', include('devices.urls')),
 ]
 
+
+docs_url_drf = include_docs_urls(title='Users API', patterns=urlpatterns_web, schema_url='https://lkn.safec.ru')
+docs_url_swagger = get_swagger_view(title='Users API', patterns=urlpatterns_web)
+
 urlpatterns_docs = [
     # Docs
-    url(r'^b2b/users/docs2/$', get_swagger_view(title='Users API', patterns=urlpatterns_web)),
-    url(r'^b2b/users/docs/', include_docs_urls(title='Users API', patterns=urlpatterns_web)),
+    url(r'^b2b/users/docs/', docs_url_drf),
+    url(r'^b2b/users/docs2/$', docs_url_swagger),
     url(r'^b2b/users/devices-docs2/$', get_swagger_view(title='Devices API', patterns=urlpatterns_devices)),
     url(r'^b2b/users/devices-docs/', include_docs_urls(title='Devices API', patterns=urlpatterns_devices)),
 ]
 
-urlpatterns = list([
+urlpatterns_admin = [
     # Admin
     url(r'^b2b/admin/users/', admin.site.urls),
     # Internal API TODO: rewrite url
     url(r'^b2b/devices/internal/', include('internal.urls')),
-] + urlpatterns_docs + urlpatterns_web + urlpatterns_devices)
+]
+
+urlpatterns = list(urlpatterns_admin + urlpatterns_docs + urlpatterns_web + urlpatterns_devices)

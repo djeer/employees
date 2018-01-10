@@ -148,6 +148,8 @@ REST_FRAMEWORK = {
     #),
 }
 
+#SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Needed to get request.is_secure() == True
+
 JWT_SECRET_KEY = 'QWERTYUIOP1234567890'
 JWT_TIMEOUT = timedelta(minutes=2)
 JWT_REFRESH_TIMEOUT = timedelta(minutes=60)
