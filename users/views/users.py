@@ -16,11 +16,17 @@ from users.serializers.devices import DeviceDetailSerializer
 from users.serializers.tracks import TrackListSerializer
 from users.lib.generate_password import generate_password
 from users.lib.queue_notice import queue_notice
-from .abstract_view import get_object
 from users.lib.excel_to_model import excel_to_models
 from users.lib.jwt import token_required
 
 logger = logging.getLogger()
+
+
+def get_object(model, pk):
+    try:
+        return model.objects.get(pk=pk)
+    except model.DoesNotExist:
+        raise NotFound
 
 
 class UsersList(APIView):
